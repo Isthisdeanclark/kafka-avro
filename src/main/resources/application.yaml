@@ -1,0 +1,33 @@
+topic:
+  name: users-new-local-dean
+  partitions-num: 1
+  replication-factor: 3
+server:
+  port: 2080
+spring:
+  kafka:
+    bootstrap-servers: http://localhost:9092
+    properties:
+      schema.registry.url: http://localhost:8081
+    consumer:
+      group-id: dean-spring-app
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      properties:
+        interceptor.classes: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+
+      properties:
+        interceptor.classes: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+        batch-size: 250
+        linger.ms: 20000
+        max.in.flight.requests.per.connection: 1
+        client.id: dean-spring-kafka-service
+    template:
+      default-topic:
+logging:
+  level:
+    root: info

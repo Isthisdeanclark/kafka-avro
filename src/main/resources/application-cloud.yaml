@@ -1,0 +1,38 @@
+topic:
+  name: users-1
+  partitions-num: 3
+  replication-factor: 3
+server:
+  port: 9080
+spring:
+  kafka:
+    bootstrap-servers: pkc-41wq6.eu-west-2.aws.confluent.cloud:9092  # <1>
+    properties:
+      # CCloud broker connection parameters 
+      ssl.endpoint.identification.algorithm: https
+      sasl.mechanism: PLAIN
+      request.timeout.ms: 20000
+      retry.backoff.ms: 500
+      sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule   required username="TJJFPE6UOWEQFSF6"   password="GkKkGzdPXEIdweIV9H02jwwGh6huzh8I5T8Q24AFk8c/09vv0/psJtx1v0dnUmCR";
+
+      security.protocol: SASL_SSL
+
+      # CCloud Schema Registry Connection parameter
+      schema.registry.url: https://psrc-lo5k9.eu-central-1.aws.confluent.cloud  # <3>
+      basic.auth.credentials.source: USER_INFO  # <4>
+      schema.registry.basic.auth.user.info: PC3UHPJJBCGMIZYF:/HBYe7iQMVOdyX4gUJB/iNw/JBIBP77Ee6ICAWcxkCusrX96vsQwIH+O2iy5d/fh # <5>
+    consumer:
+      group-id: group_id
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      batch-size: 250
+      linger.ms: 10000
+    template:
+      default-topic:
+logging:
+  level:
+    root: info

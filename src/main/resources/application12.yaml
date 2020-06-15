@@ -1,0 +1,56 @@
+server:
+  port: 2080
+
+io.confluent.developer.config.topic.name=users
+io.confluent.developer.config.topic.replicas=3
+io.confluent.developer.config.topic.partitions=1
+
+  spring.kafka.properties.ssl.endpoint.identification.algorithm=https
+  spring.kafka.properties.sasl.mechanism=PLAIN
+  spring.kafka.properties.bootstrap.servers=pkc-41wq6.eu-west-2.aws.confluent.cloud:9092
+  spring.kafka.properties.sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule   required username="{{ CLUSTER_API_KEY }}"   password="{{ CLUSTER_API_SECRET }}";
+  spring.kafka.properties.security.protocol=SASL_SSL
+  # Schema Registry
+  spring.kafka.properties.basic.auth.credentials.source=USER_INFO
+  spring.kafka.properties.schema.registry.basic.auth.user.info={{ SR_API_KEY }}:{{ SR_API_SECRET }}
+  spring.kafka.properties.schema.registry.url=https://psrc-lo5k9.eu-central-1.aws.confluent.cloud
+  # producer configuration
+  spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+  spring.kafka.producer.value-serializer=io.confluent.kafka.serializers.KafkaAvroSerializer
+  # consumer configuration
+  spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+  spring.kafka.consumer.value-deserializer=io.confluent.kafka.serializers.KafkaAvroDeserializer
+
+topic:
+  name: users
+  partitions-num: 3
+  replication-factor: 1
+server:
+  port: 2080
+spring:
+  kafka:
+    bootstrap-servers:
+      - ec2-35-179-85-125.eu-west-2.compute.amazonaws.com:9092
+    properties:
+      schema.registry.url: ec2-35-179-85-125.eu-west-2.compute.amazonaws.com:8081
+      basic:
+        auth:
+          credentials:
+            source=USER_INFO:
+    consumer:
+      group-id: group_id
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      properties:
+        interceptor.classes: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        interceptor.classes: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+    template:
+      default-topic:
+logging:
+  level:
+    root: info
